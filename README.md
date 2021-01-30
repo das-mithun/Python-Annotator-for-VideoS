@@ -9,8 +9,14 @@ Refer help.txt before proceeding with the usage of the application.
 
 ![example](https://raw.githubusercontent.com/kevalvc/Python-Annotator-for-VideoS/master/Examples/example.PNG)
 
+
+
 ## Installation
- * Dependencies
+The requirements.txt file should list all Python libraries that your notebooks depend on, and they will be installed using:
+
+pip install -r requirements.txt
+
+* Dependencies
 
    * python-pyqt5
    * python-pyqt5.Qtmultimedia
