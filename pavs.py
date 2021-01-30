@@ -87,6 +87,13 @@ class Window(QMainWindow):
         self.importButton = QPushButton("Import")
         self.importButton.clicked.connect(self.importCSV)
 
+
+        self.hateLabelButton = QPushButton("Label")
+        self.hateLabelButton.clicked.connect(self.hateLabelFunc)
+
+        self.targetLabelButton = QPushButton("Targets")
+        self.targetLabelButton.clicked.connect(self.targetLabelFunc)
+
         # self.ctr = QLineEdit()
         # self.ctr.setPlaceholderText("Extra")
 
@@ -97,15 +104,22 @@ class Window(QMainWindow):
         self.endTime.setPlaceholderText("Select End Time")
 
         self.iLabel = QComboBox(self)
-        self.iLabel.addItem("1. Eye Contact")
-        self.iLabel.addItem("2. Pointing")
-        self.iLabel.addItem("3. Response to Names")
-        self.iLabel.addItem("4. Following Pointing")
-        self.iLabel.addItem("5. Babbling")
-        self.iLabel.addItem("6. Question-Answering")
-        self.iLabel.addItem("7. Showing")
-        self.iLabel.addItem("8. Following Instructions")
+        self.iLabel.addItem("1. Hate")
+        self.iLabel.addItem("2. Non Hate")
+        self.iLabel.addItem("3. Offensive")
         self.iLabel.activated[str].connect(self.style_choice)
+		
+		
+        self.iTarget = QComboBox(self)
+        self.iTarget.addItem("1. Jews")
+        self.iTarget.addItem("2. Blacks")
+        self.iTarget.addItem("3. Muslims")
+        self.iTarget.addItem("4. Asian")
+        self.iTarget.addItem("5. Whites")
+        self.iTarget.addItem("6. Sexits")
+        self.iTarget.addItem("7. LGBTQ")
+        self.iTarget.addItem("8. Others")
+        self.iTarget.activated[str].connect(self.style_choice)
 
         # self.iLabel = QLineEdit()
         # self.iLabel.setPlaceholderText("Label")
@@ -148,6 +162,12 @@ class Window(QMainWindow):
         plotBox.addLayout(layout, 5)
         # }
 
+        layout3 = QHBoxLayout()
+        layout3.addWidget(self.hateLabelButton)
+        layout3.addWidget(self.targetLabelButton)
+        layout3.addWidget(self.iTarget)
+
+		
         # Right Layout {
         inputFields = QHBoxLayout()
         inputFields.addWidget(self.startTime)
@@ -165,6 +185,7 @@ class Window(QMainWindow):
         layout2.addWidget(self.tableWidget)
         layout2.addLayout(inputFields, 1)
         layout2.addLayout(feats, 2)
+        layout2.addLayout(layout3, 2)
         # layout2.addWidget(self.nextButton)
         # }
 
@@ -279,7 +300,9 @@ class Window(QMainWindow):
     def export(self):
         if self.fileNameExist:
             self.fName = ((self.fileNameExist.rsplit('/', 1)[1]).rsplit('.',1))[0]
-        path, _ = QFileDialog.getSaveFileName(self, 'Save File', QDir.homePath() + "/"+self.fName+".csv", "CSV Files(*.csv *.txt)")
+            print(self.fName, self.fileNameExist)
+        #path, _ = QFileDialog.getSaveFileName(self, 'Save File', QDir.homePath() + "/"+self.fName+".csv", "CSV Files(*.csv *.txt)")
+        path = self.fileNameExist[:-4]+".csv"
         if path:
             with open(path, 'w') as stream:
                 print("saving", path)
@@ -304,7 +327,7 @@ class Window(QMainWindow):
         # else:
         self.clearTable()
         path, _ = QFileDialog.getOpenFileName(self, 'Save File', QDir.homePath() , "CSV Files(*.csv *.txt)")
-        print(path)
+
         if path:
             with open(path, 'r') as stream:
                 print("loading", path)
@@ -402,6 +425,26 @@ class Window(QMainWindow):
         self.mediaPlayer.setVolume(self.mediaPlayer.volume() - 10)
         print("Volume: " + str(self.mediaPlayer.volume()))
 
+    def hateLabelFunc(self):
+        if(self.fileNameExist):
+            print(self.fileNameExist)
+        print((self.iLabel.currentText().split(' ', 1)[1]))
+        path = self.fileNameExist[:-4]+'_label'+".txt"
+        if path:
+            with open(path, 'w') as file:
+                file.write(str(self.iLabel.currentText().split(' ', 1)[1])+'\n')
+            print("saving", path)
+            
+
+    def targetLabelFunc(self):
+        print((self.iTarget.currentText().split(' ', 1)[1]))
+        path = self.fileNameExist[:-4]+'_target'+".txt"
+        if path:
+            with open(path, 'a') as file:
+                file.write(str(self.iTarget.currentText().split(' ', 1)[1])+'\n')
+            print("saving", path)
+
+
     # def mouseMoveEvent(self, event):
         # if event.buttons() == Qt.LeftButton:
         #     self.move(event.globalPos() \- QPoint(self.frameGeometry().width() / 2, \
@@ -430,6 +473,7 @@ class Window(QMainWindow):
 
     def clickExit(self):
         sys.exit()
+
 
 App = QApplication(sys.argv)
 window = Window()
